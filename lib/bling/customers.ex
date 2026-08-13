@@ -301,9 +301,11 @@ defmodule Bling.Customers do
     stripe_params = stripe_params(opts)
     return_url = opts[:return_url]
     repo = Bling.repo()
-    prices = opts[:prices]
 
-    items = prices |> Enum.map(fn {id, quantity} -> %{price: id, quantity: quantity} end)
+    prices =
+      (opts[:prices] || []) |> Enum.map(fn {id, quantity} -> %{price: id, quantity: quantity} end)
+
+    items = Keyword.get(opts, :items, prices)
 
     params =
       %{
